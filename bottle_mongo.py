@@ -12,7 +12,7 @@ This module contains the following public classes:
 
 """
 
-__all__ = ['MongoPlugin',]
+__all__ = ['MongoPlugin', ]
 
 try:
     from json import dumps
@@ -20,11 +20,12 @@ except ImportError:
     from simplejson import dumps
 import inspect
 
+import pymongo
 from bottle import PluginError, response, JSONPlugin
 
-import pymongo
 if pymongo.version_tuple[0] >= 3:
     from pymongo import MongoClient
+
     MongoReplicaSetClient = MongoClient
 else:
     try:
@@ -33,6 +34,7 @@ else:
     except ImportError:
         # Backward compatibility with PyMongo 2.2
         from pymongo import Connection as MongoClient
+
         MongoReplicaSetClient = None
 
 from pymongo.uri_parser import parse_uri
@@ -40,7 +42,6 @@ import bson.json_util
 
 
 class MongoPlugin(object):
-
     """Mongo Plugin for Bottle.
 
     Connect to a mongodb instance, and add a DB in a Bottle callback
@@ -157,9 +158,9 @@ class MongoPlugin(object):
 
     def apply(self, callback, context):
         """Return a decorated route callback."""
-        args = inspect.getargspec(context.callback)[0]
+        args = inspect.signature(context.callback)
         # Skip this callback if we don't need to do anything
-        if self.keyword not in args:
+        if self.keyword not in args.parameters:
             return callback
 
         def wrapper(*a, **ka):

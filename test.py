@@ -11,7 +11,7 @@ import pymongo
 class RedisTest(unittest.TestCase):
     def setUp(self):
         self.app = bottle.Bottle(catchall=False)
-        plugin = MongoPlugin(uri="mongodb://127.0.0.1",
+        plugin = MongoPlugin(uri="mongodb://0.0.0.0",
                              db="bottle", json_mongo=True)
         self.plugin = self.app.install(plugin)
 
@@ -57,7 +57,7 @@ class ReplicaSetTest(RedisTest):
     def setUp(self):
         self.app = bottle.Bottle(catchall=False)
         read_pref = pymongo.ReadPreference.SECONDARY
-        plugin = MongoPlugin(uri="mongodb://127.0.0.1:27017,127.0.0.1:27018/?replicaSet=testReplSet",
+        plugin = MongoPlugin(uri="mongodb://0.0.0.0:27017/?replicaSet=testReplSet",
                              db="bottle", json_mongo=True, read_preference=read_pref, w=2)
         self.plugin = self.app.install(plugin)
  
